@@ -19,7 +19,9 @@ public class UserService {
     }
 
     public User getUser(Integer id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(()
+                        ->new RuntimeException("user not found"));
     }
 
     public void deleteUser(Integer id) {

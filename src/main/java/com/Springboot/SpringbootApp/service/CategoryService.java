@@ -26,7 +26,7 @@ public class CategoryService {
 
     public Category getCategoryByName(String category) {
         Optional<Category> category1=categoryRepository.findByName(category);
-        return category1.orElse(null);
+        return category1.orElseThrow(()->new RuntimeException("category not found."));
     }
 
     public void deleteCategory(Integer id) {

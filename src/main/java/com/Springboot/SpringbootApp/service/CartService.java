@@ -38,7 +38,7 @@ public class CartService {
 
     public Cart getCart(Integer id) {
         Optional<Cart> cart=cartRepository.findById(id);
-        return cart.orElse(null);
+        return cart.orElseThrow(()->new RuntimeException("cart not found."));
     }
 
     public void deleteCart(Integer id) {

@@ -31,7 +31,7 @@ public class ProductService {
 
     public Product getProduct(Integer id) {
         Optional<Product> product=productRepository.findById(id);
-       return product.orElse(null);
+       return product.orElseThrow(()->new RuntimeException("product not found."));
     }
 
     public Product addProduct(AddProductRequestDto dto) {
