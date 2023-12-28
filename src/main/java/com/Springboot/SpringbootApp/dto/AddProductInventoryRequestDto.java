@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddCartRequestDto {
-    private Integer customer;
-    private List<Integer> products;
+public class AddProductInventoryRequestDto {
+    private String name;
+    private Integer price;
+    private Integer quantity;
+    private String description;
+    private Integer category;
 }

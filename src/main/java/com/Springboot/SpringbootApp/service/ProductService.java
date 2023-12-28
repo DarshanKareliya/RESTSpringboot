@@ -40,7 +40,7 @@ public class ProductService {
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .quantity(dto.getQuantity())
-                .category(categoryMapper.mapFrom(dto.getCategory()))
+                .category(categoryService.getCategory(dto.getCategory()))
                 .build();
 
         return productRepository.save(newProduct);
@@ -69,7 +69,7 @@ public class ProductService {
             product.setQuantity(productDto.getQuantity());
         }
         if (Objects.nonNull(productDto.getCategory())){
-            product.setCategory(categoryMapper.mapFrom(productDto.getCategory()));
+            product.setCategory(categoryService.getCategory(productDto.getCategory()));
         }
 
         productRepository.save(product);

@@ -40,7 +40,8 @@ public class CategoryController {
     }
 
     @PatchMapping(path = "/categories/{id}")
-    public CategoryDto update(@PathVariable(name = "id") Integer id,@RequestBody UpdateCategoryRequestDto dto){
+    public CategoryDto update(@PathVariable(name = "id") Integer id,
+                              @RequestBody UpdateCategoryRequestDto dto){
         Category category=categoryService.updateCategory(id,dto);
         CategoryDto responseDto=categoryMapper.mapTo(category);
         return responseDto;

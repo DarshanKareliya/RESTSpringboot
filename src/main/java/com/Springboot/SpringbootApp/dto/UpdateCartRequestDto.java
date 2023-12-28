@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UpdateCartRequestDto {
-    private UserDto customer;
-    private List<ProductDto> products;
+    private Integer customer;
+    private List<Integer> products;
 }

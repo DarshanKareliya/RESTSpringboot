@@ -26,12 +26,14 @@ public class CartService {
     UserMapper userMapper;
     ProductMapper productMapper;
     UserService userService;
+    ProductService productService;
 
-    public CartService(CartRepository cartRepository,UserMapper userMapper,ProductMapper productMapper,UserService userService) {
+    public CartService(CartRepository cartRepository,UserMapper userMapper,ProductMapper productMapper,UserService userService,ProductService productService) {
         this.cartRepository = cartRepository;
         this.userMapper= userMapper;
         this.productMapper=productMapper;
         this.userService=userService;
+        this.productService=productService;
     }
 
     public Cart getCart(Integer id) {
@@ -47,10 +49,11 @@ public class CartService {
     public Cart addCart(AddCartRequestDto dto) {
 
         Cart newCart=Cart.builder()
-                .customer(userService.getUser(dto.getCustomer().getId()))
-                .products(dto.getProducts().stream()
-                        .map((productDto)->
-                        productMapper.mapFrom(productDto))
+                .customer(userService.getUser(dto.getCustomer()))
+                .products(dto.getProducts()
+                        .stream()
+                        .map((id)->
+                                productService.getProduct(id))
                         .collect(Collectors.toList()))
                 .build();
 
@@ -61,15 +64,15 @@ public class CartService {
     public Cart updateCart(Integer id,UpdateCartRequestDto dto) {
 
         Cart cart=this.getCart(id);
-        if (Objects.nonNull(dto.getCustomer())){
+       /* if (Objects.nonNull(dto.getCustomer())){
             cart.setCustomer(userMapper.mapFrom(dto.getCustomer()));
-        }
+        }*/
         if (Objects.nonNull(dto.getProducts())) {
             cart.setProducts(dto.getProducts()
-                    .stream()
-                    .map((productDto)->
-                            productMapper.mapFrom(productDto))
-                    .collect(Collectors.toList()));
+                            .stream()
+                            .map((productId)->
+                                    productService.getProduct(productId))
+                            .collect(Collectors.toList()));
         }
         cartRepository.save(cart);
 
