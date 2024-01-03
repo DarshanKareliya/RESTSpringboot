@@ -4,6 +4,8 @@ import com.Springboot.SpringbootApp.dto.AddUserRequestDto;
 import com.Springboot.SpringbootApp.dto.UpdateUserRequestDto;
 import com.Springboot.SpringbootApp.entity.User;
 import com.Springboot.SpringbootApp.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -13,13 +15,23 @@ import java.util.Objects;
 public class UserService {
 
     UserRepository userRepository;
+    RoleService roleService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,RoleService roleService)
+    {
         this.userRepository = userRepository;
+        this.roleService=roleService;
     }
 
     public User getUser(Integer id) {
         return userRepository.findById(id)
+                .orElseThrow(()
+                        ->new RuntimeException("user not found"));
+    }
+    public User getUser(String username){
+        return userRepository.findByUsername(username)
                 .orElseThrow(()
                         ->new RuntimeException("user not found"));
     }
@@ -33,9 +45,9 @@ public class UserService {
         User newUser =User.builder()
                 .username(dto.getUsername())
                 .email(dto.getEmail())
-                .role(dto.getRole())
+                .role(roleService.getRole(dto.getRole()))
                 .mobile(dto.getMobile())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
         return userRepository.save(newUser);
     }
@@ -49,7 +61,7 @@ public class UserService {
             user.setEmail(dto.getEmail());
         }
         if (Objects.nonNull(dto.getRole())){
-            user.setRole(dto.getRole());
+            user.setRole(roleService.getRole(dto.getRole()));
         }
         if (Objects.nonNull(dto.getPassword())){
             user.setPassword(dto.getPassword());

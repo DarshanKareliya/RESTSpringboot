@@ -13,6 +13,6 @@ public class UpdateUserRequestDto {
     private String username;
     private String email;
     private String password;
-    private String role;
+    private Integer role;
     private Long mobile;
 }

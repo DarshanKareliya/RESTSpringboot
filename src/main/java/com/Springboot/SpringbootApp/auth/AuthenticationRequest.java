@@ -1,4 +1,4 @@
-package com.Springboot.SpringbootApp.dto;
+package com.Springboot.SpringbootApp.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddUserRequestDto {
+public class AuthenticationRequest {
     private String username;
-    private String email;
     private String password;
-    private Integer role;
-    private Long mobile;
 }
