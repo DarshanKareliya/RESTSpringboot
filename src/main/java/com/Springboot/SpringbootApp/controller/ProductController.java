@@ -8,8 +8,11 @@ import com.Springboot.SpringbootApp.entity.Product;
 import com.Springboot.SpringbootApp.mapper.impl.ProductMapper;
 import com.Springboot.SpringbootApp.service.ProductService;
 import lombok.extern.java.Log;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -25,15 +28,8 @@ public class ProductController {
 
     }
 
-    @GetMapping(path = "/products/{id}")
-    public ProductDto get(@PathVariable(name = "id") Integer id){
-        Product product=productService.getProduct(id);
-        ProductDto responseDto=productMapper.mapTo(product);
-
-        return responseDto;
-    }
-
     @PostMapping(path = "/products")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ProductDto add(@RequestBody AddProductRequestDto addProductRequestDto){
 
         Product product=productService.addProduct(addProductRequestDto);
@@ -43,22 +39,39 @@ public class ProductController {
         return responseDto;
     }
 
+    @GetMapping(path = "/products/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ProductDto get(@PathVariable(name = "id") Integer id){
+        Product product=productService.getProduct(id);
+        ProductDto responseDto=productMapper.mapTo(product);
 
-    @DeleteMapping(path = "/products/{id}")
-    public void delete(@PathVariable(name = "id") Integer id){
-
-        productService.deleteProduct(id);
+        return responseDto;
+    }
+    @GetMapping(path = "/products")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<ProductDto> getAll(){
+        List<Product> products=productService.getAllProduct();
+        List<ProductDto> responseDto=products.stream()
+                .map(product -> productMapper.mapTo(product))
+                .collect(Collectors.toList());
+        return responseDto;
     }
 
     @PatchMapping(path = "/products/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ProductDto update(@PathVariable(name = "id") Integer id,
                              @RequestBody UpdateProductRequestDto dto){
-
         Product product=productService.updateProduct(id,dto);
-
         ProductDto responseDto=productMapper.mapTo(product);
 
         return responseDto;
 
+    }
+
+    @DeleteMapping(path = "/products/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void delete(@PathVariable(name = "id") Integer id){
+
+        productService.deleteProduct(id);
     }
 }

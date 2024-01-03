@@ -10,6 +10,7 @@ import com.Springboot.SpringbootApp.repository.ProductRepository;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -76,5 +77,9 @@ public class ProductService {
 
         return product;
 
+    }
+
+    public List<Product> getAllProduct() {
+        return productRepository.findAll();
     }
 }

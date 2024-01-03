@@ -78,4 +78,14 @@ public class CartService {
 
         return cart;
     }
+
+    public List<Cart> getAllCart() {
+        return cartRepository.findAll();
+    }
+
+    public Cart getCartOfUser(Integer userid) {
+        Optional<Cart> cart=cartRepository.findByCustomer(userService.getUser(userid));
+        return cart.orElseThrow(()->new RuntimeException("cart not found"));
+
+    }
 }

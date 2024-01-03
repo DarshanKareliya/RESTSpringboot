@@ -7,6 +7,7 @@ import com.Springboot.SpringbootApp.entity.Category;
 import com.Springboot.SpringbootApp.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -51,5 +52,9 @@ public class CategoryService {
         categoryRepository.save(category);
 
         return category;
+    }
+
+    public List<Category> getAllCategory() {
+        return categoryRepository.findAll();
     }
 }

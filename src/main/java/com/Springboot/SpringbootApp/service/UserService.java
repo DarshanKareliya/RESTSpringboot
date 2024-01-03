@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -45,7 +46,7 @@ public class UserService {
         User newUser =User.builder()
                 .username(dto.getUsername())
                 .email(dto.getEmail())
-                .role(roleService.getRole(dto.getRole()))
+                .role(roleService.getRole("USER"))
                 .mobile(dto.getMobile())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
@@ -72,5 +73,9 @@ public class UserService {
 
         return userRepository.save(user);
 
+    }
+
+    public List<User> getAllUser() {
+        return userRepository.findAll();
     }
 }

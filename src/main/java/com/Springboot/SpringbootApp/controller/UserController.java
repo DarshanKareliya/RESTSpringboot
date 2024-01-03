@@ -12,6 +12,8 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Log
@@ -29,45 +31,6 @@ public class UserController {
         this.userMapper=userMapper;
     }
 
-    @GetMapping(path = "/users/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")// for admin
-    public UserDto get(@PathVariable(name = "id") Integer id){
-        User user=userService.getUser(id);
-        UserDto responseDto=userMapper.mapTo(user);
-        return responseDto;
-    }
-
-    @GetMapping(path = "/users")
-    @PreAuthorize("hasAuthority('USER')")// for user
-    public UserDto get(@RequestHeader("Authorization") String token){
-        log.info("inside get of user");
-
-        String username= tokenService.usernameFromToken(token);
-        log.info("got username from token");
-        log.info("username is : "+ username);
-        User user=userService.getUser(username);
-        log.info("got user for username");
-        UserDto responseDto=userMapper.mapTo(user);
-        return responseDto;
-
-    }
-
-    @DeleteMapping(path = "/users/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")// for admin
-    public void delete(@PathVariable(name = "id") Integer id)
-    {
-        userService.deleteUser(id);
-    }
-
-    @DeleteMapping(path = "/users")
-    @PreAuthorize("hasAuthority('USER')")// for users
-    public void delete(@RequestHeader("Authorization") String token)
-    {
-        String username= tokenService.usernameFromToken(token);
-        User user=userService.getUser(username);
-        userService.deleteUser(user.getId());
-    }
-
     @PostMapping(path = "/users")   // for all
     public UserDto add(@RequestBody AddUserRequestDto dto)
     {
@@ -76,8 +39,37 @@ public class UserController {
         return responseDto;
     }
 
-    @PatchMapping(path = "/users/{id}")
+    @GetMapping(path = "/users/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")// for admin
+    public UserDto get(@PathVariable(name = "id") Integer id){
+        User user=userService.getUser(id);
+        UserDto responseDto=userMapper.mapTo(user);
+        return responseDto;
+    }
+    @GetMapping(path = "/users")
+    @PreAuthorize("hasAuthority('ADMIN')") // for admin
+    public List<UserDto> getAll(){
+        List<User> users=userService.getAllUser();
+        List<UserDto> responseDto=users.stream()
+                .map(user -> userMapper.mapTo(user))
+                .collect(Collectors.toList());
+        return responseDto;
+    }
+
+    @GetMapping(path = "/users/userInfo")
+    @PreAuthorize("hasAuthority('USER')")// for user
+    public UserDto get(@RequestHeader("Authorization") String token){
+        log.info("inside get of user");
+        String username= tokenService.usernameFromToken(token);
+        log.info("got username from token");
+        log.info("username is : "+ username);
+        User user=userService.getUser(username);
+        log.info("got user for username");
+        UserDto responseDto=userMapper.mapTo(user);
+        return responseDto;
+    }
+    @PatchMapping(path = "/users/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")  // for admin
     public UserDto update(@PathVariable(name = "id") Integer id,
                           @RequestBody UpdateUserRequestDto dto){
         User user=userService.updateUser(id,dto);
@@ -85,8 +77,8 @@ public class UserController {
         return responseDto;
     }
 
-    @PatchMapping(path = "/users")
-    @PreAuthorize("hasAuthority('USER')")// access url for users
+    @PatchMapping(path = "/users/updateInfo")
+    @PreAuthorize("hasAuthority('USER')")  // access url for users
     public UserDto update(@RequestHeader("Authorization") String token,
                           @RequestBody UpdateUserRequestDto dto){
         String username= tokenService.usernameFromToken(token);
@@ -96,5 +88,21 @@ public class UserController {
         UserDto responseDto=userMapper.mapTo(updatedUser);
         responseDto.setToken(jwtToken);
         return responseDto;
+    }
+
+    @DeleteMapping(path = "/users/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")// for admin
+    public void delete(@PathVariable(name = "id") Integer id)
+    {
+        userService.deleteUser(id);
+    }
+
+    @DeleteMapping(path = "/users/deleteUser")
+    @PreAuthorize("hasAuthority('USER')")// for users
+    public void delete(@RequestHeader("Authorization") String token)
+    {
+        String username= tokenService.usernameFromToken(token);
+        User user=userService.getUser(username);
+        userService.deleteUser(user.getId());
     }
 }

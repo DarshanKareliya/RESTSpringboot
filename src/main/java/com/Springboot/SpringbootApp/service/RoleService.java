@@ -1,10 +1,13 @@
 package com.Springboot.SpringbootApp.service;
 
+import com.Springboot.SpringbootApp.dto.AddRoleDto;
+import com.Springboot.SpringbootApp.dto.UpdateRoleDto;
 import com.Springboot.SpringbootApp.entity.Role;
 import com.Springboot.SpringbootApp.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,8 +29,11 @@ public class RoleService {
 
         return role.orElseThrow(()-> new RuntimeException("role not found."));
     }
-    public Role addRole(Role role){
-        Role savedrole=repository.save(role);
+    public Role addRole(AddRoleDto dto){
+        Role newRole=Role.builder()
+                .roleName(dto.getName())
+                .build();
+        Role savedrole=repository.save(newRole);
         System.out.println("role saved: " +savedrole);
         return savedrole;
     }
@@ -37,5 +43,23 @@ public class RoleService {
 
         roles.stream().forEach((role -> repository.save(role)));
 
+    }
+
+    public List<Role> getAllRole() {
+        return repository.findAll();
+    }
+
+    public Role updateRole(Integer id, UpdateRoleDto dto) {
+        Role role=this.getRole(id);
+        if (Objects.nonNull(dto.getName())){
+            role.setRoleName(dto.getName());
+        }
+        repository.save(role);
+        return role;
+    }
+
+    public void deleteRole(Integer id) {
+        Role role=this.getRole(id);
+        repository.delete(role);
     }
 }

@@ -8,6 +8,7 @@ import com.Springboot.SpringbootApp.entity.ProductInventory;
 import com.Springboot.SpringbootApp.repository.ProductInventoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -68,5 +69,9 @@ public class ProductInventoryService {
         inventoryRepository.save(productInventory);
 
         return productInventory;
+    }
+
+    public List<ProductInventory> getAllProductInventory() {
+        return inventoryRepository.findAll();
     }
 }
